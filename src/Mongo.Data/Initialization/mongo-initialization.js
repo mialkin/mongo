@@ -4,24 +4,24 @@ db.createCollection("orders");
 
 db.orders.insertMany([
     {
-        "OrderId": 100,
-        "Lines": [
+        "orderId": 100,
+        "lines": [
             {
-                "Position": 1,
-                "ProductId": 4444
+                "position": 1,
+                "productId": 4444
             },
             {
-                "Position": 2,
-                "ProductId": 4455
+                "position": 2,
+                "productId": 4455
             }
         ]
     },
     {
-        "OrderId": 101,
-        "Lines": [
+        "orderId": 101,
+        "lines": [
             {
-                "Position": 1,
-                "ProductId": 500
+                "position": 1,
+                "productId": 500
             }
         ]
     }

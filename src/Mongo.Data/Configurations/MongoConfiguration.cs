@@ -18,7 +18,11 @@ public static class MongoConfiguration
             x =>
                 x.GetService<IMongoDatabase>()!.GetCollection<Order>("orders"));
 
-        var conventionPack = new ConventionPack { new IgnoreExtraElementsConvention(true) };
-        ConventionRegistry.Register(name: "IgnoreExtraElements", conventions: conventionPack, filter: _ => true);
+        var conventionPack = new ConventionPack
+        {
+            new IgnoreExtraElementsConvention(ignoreExtraElements: true),
+            new CamelCaseElementNameConvention()
+        };
+        ConventionRegistry.Register(name: "Custom conventions", conventions: conventionPack, filter: _ => true);
     }
 }
