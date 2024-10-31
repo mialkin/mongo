@@ -1,0 +1,10 @@
+services:
+  mongo:
+    image: mongodb/mongodb-community-server:6.0.17-ubi8
+    container_name: mongo-api
+    restart: unless-stopped
+    ports:
+      - 7910:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
