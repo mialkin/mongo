@@ -1,6 +1,6 @@
 # Mongo
 
-This application is a showcase of MongoDB usage in .NET.
+This application is a showcase of [↑ MongoDB C# driver](https://github.com/mongodb/mongo-csharp-driver).
 
 ## Prerequisites
 
@@ -18,4 +18,10 @@ Run application:
 
 ```bash
 dotnet watch --project src/Mongo.Api --no-hot-reload
+```
+
+Shutdown infrastructure:
+
+```bash
+docker compose --file=src/Mongo.Api/infrastructure.yaml down
 ```
