@@ -2,26 +2,30 @@ db = db.getSiblingDB("example");
 
 db.createCollection("orders");
 
+// db.orders.createIndex( { "CartId": 1 }, { unique: true } )
+
 db.orders.insertMany([
     {
-        "orderId": 100,
-        "lines": [
+        "OrderId": 100,
+        "CartId": 5,
+        "Lines": [
             {
-                "position": 1,
-                "productId": 4444
+                "Position": 1,
+                "ProductId": 4444
             },
             {
-                "position": 2,
-                "productId": 4455
+                "Position": 2,
+                "ProductId": 4455
             }
         ]
     },
     {
-        "orderId": 101,
-        "lines": [
+        "OrderId": 101,
+        "CartId": 6,
+        "Lines": [
             {
-                "position": 1,
-                "productId": 500
+                "Position": 1,
+                "ProductId": 500
             }
         ]
     }

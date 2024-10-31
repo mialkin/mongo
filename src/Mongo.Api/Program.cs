@@ -44,5 +44,16 @@ application.MapPost(
         await collection.InsertOneAsync(order);
     });
 
+application.MapPost(
+    pattern: "/create-index",
+    handler: async (IMongoCollection<Order> collection) =>
+    {
+        var createIndexModel = new CreateIndexModel<Order>(
+            keys: Builders<Order>.IndexKeys.Ascending(x => x.CartId),
+            options: new CreateIndexOptions { Name = "CartIdUniqueIndex", Unique = true });
+
+        await collection.Indexes.CreateOneAsync(model: createIndexModel);
+    });
+
 
 application.Run();
