@@ -2,19 +2,17 @@ db = db.getSiblingDB("example");
 
 db.createCollection("orders");
 
-db.configuration.insert([
+db.orders.insertMany([
     {
         "OrderId": 100,
         "Lines": [
             {
                 "Position": 1,
-                "ProductId": 4444,
-                "Price": 9.99
+                "ProductId": 4444
             },
             {
                 "Position": 2,
-                "ProductId": 4455,
-                "Price": 24.99
+                "ProductId": 4455
             }
         ]
     },
@@ -23,8 +21,7 @@ db.configuration.insert([
         "Lines": [
             {
                 "Position": 1,
-                "ProductId": 500,
-                "Price": 30
+                "ProductId": 500
             }
         ]
     }

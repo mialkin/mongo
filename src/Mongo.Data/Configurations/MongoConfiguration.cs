@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Mongo.Data.Models;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
 namespace Mongo.Data.Configurations;
@@ -16,5 +17,8 @@ public static class MongoConfiguration
         services.AddSingleton<IMongoCollection<Order>>(
             x =>
                 x.GetService<IMongoDatabase>()!.GetCollection<Order>("orders"));
+
+        var conventionPack = new ConventionPack { new IgnoreExtraElementsConvention(true) };
+        ConventionRegistry.Register(name: "IgnoreExtraElements", conventions: conventionPack, filter: _ => true);
     }
 }

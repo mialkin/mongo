@@ -1,3 +1,3 @@
 namespace Mongo.Data.Models;
 
-public record Line(int Position, int ProductId, decimal Price);
+public record Line(int Position, int ProductId);

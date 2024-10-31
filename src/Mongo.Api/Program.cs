@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Mongo.Data.Configurations;
 using Mongo.Data.Models;
 using MongoDB.Driver;
@@ -35,5 +36,13 @@ application.MapGet(
         var orders = await collection.AsQueryable().Take(10).ToListAsync();
         return orders;
     });
+
+application.MapPost(
+    pattern: "/orders",
+    handler: async ([FromBody] Order order, IMongoCollection<Order> collection) =>
+    {
+        await collection.InsertOneAsync(order);
+    });
+
 
 application.Run();
