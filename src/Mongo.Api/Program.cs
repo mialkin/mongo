@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Mongo.Api.HostedServices;
 using Mongo.Data.Configurations;
 using Mongo.Data.Models;
 using MongoDB.Driver;
@@ -20,6 +21,7 @@ var services = builder.Services;
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 services.ConfigureMongo();
+services.AddHostedService<EnsureCartUniqueIndexCreatedHostedService>();
 
 var application = builder.Build();
 
