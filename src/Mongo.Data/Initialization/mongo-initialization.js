@@ -2,7 +2,7 @@ db = db.getSiblingDB("example");
 
 db.createCollection("orders");
 
-// db.orders.createIndex( { "CartId": 1 }, { unique: true } )
+db.orders.createIndex({"CartId": 1}, {name: "CartIdUniqueIndex", unique: true})
 
 db.orders.insertMany([
     {
