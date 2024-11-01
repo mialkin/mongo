@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Mongo.Api.HostedServices;
 using Mongo.Data.Configurations;
+using Mongo.Data.Constants;
 using Mongo.Data.Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -21,7 +22,7 @@ var services = builder.Services;
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 services.ConfigureMongo();
-services.AddHostedService<EnsureCartUniqueIndexCreatedHostedService>();
+services.AddHostedService<CheckMongoIndexesHostedService>();
 
 var application = builder.Build();
 
@@ -41,9 +42,23 @@ application.MapGet(
 
 application.MapPost(
     pattern: "/orders",
-    handler: async ([FromBody] Order order, IMongoCollection<Order> collection) =>
+    handler: async ([FromBody] Order order, IMongoCollection<Order> collection, ILogger<Program> logger) =>
     {
-        await collection.InsertOneAsync(order);
+        try
+        {
+            await collection.InsertOneAsync(order);
+        }
+        catch (MongoWriteException exception)
+        {
+            if (exception.Message.Contains($"{IndexNames.CartId} dup key"))
+            {
+                logger.LogInformation(
+                    "Failed to create a new order with the same idempotency key. Cart ID: {CartId}", order.CartId);
+                return;
+            }
+
+            throw;
+        }
     });
 
 application.MapPost(
@@ -52,10 +67,9 @@ application.MapPost(
     {
         var createIndexModel = new CreateIndexModel<Order>(
             keys: Builders<Order>.IndexKeys.Ascending(x => x.CartId),
-            options: new CreateIndexOptions { Name = "CartIdUniqueIndex", Unique = true });
+            options: new CreateIndexOptions { Name = IndexNames.CartId, Unique = true });
 
         await collection.Indexes.CreateOneAsync(model: createIndexModel);
     });
-
 
 application.Run();
