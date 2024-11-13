@@ -6,6 +6,7 @@ db.orderIdSequence.insert({
 });
 
 db.createCollection("orders");
+db.orders.createIndex({"OrderId": 1}, {name: "OrderId", unique: true});
 db.orders.createIndex({"CartId": 1}, {name: "CartId", unique: true});
 
 db.orders.insertMany([
