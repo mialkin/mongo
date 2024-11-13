@@ -75,16 +75,10 @@ application.MapPost(
             order.OrderId = sequence.Value;
             await orders.InsertOneAsync(order, cancellationToken: cancellationToken);
         }
-        catch (MongoWriteException exception)
+        catch (MongoWriteException exception) when (exception.Message.Contains($"{IndexNames.CartId} dup key"))
         {
-            if (exception.Message.Contains($"{IndexNames.CartId} dup key"))
-            {
-                logger.LogInformation(
-                    "Failed to create a new order with the same idempotency key. Cart ID: {CartId}", order.CartId);
-                return;
-            }
-
-            throw;
+            logger.LogInformation(
+                "Failed to create a new order with the same idempotency key. Cart ID: {CartId}", order.CartId);
         }
     });
 
