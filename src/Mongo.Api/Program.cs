@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 using Mongo.Api.HostedServices;
 using Mongo.Data.Configurations;
 using Mongo.Data.Constants;
 using Mongo.Data.Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Scalar.AspNetCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +20,12 @@ builder.Host.UseSerilog(
 var services = builder.Services;
 
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
+services.AddSwaggerGen(
+    options =>
+    {
+        options.DescribeAllParametersInCamelCase();
+        options.SwaggerDoc("v1", new OpenApiInfo { Title = "Mongo API", Version = "v1" });
+    });
 services.ConfigureMongo();
 services.AddHostedService<CheckMongoIndexesHostedService>();
 
@@ -28,9 +33,14 @@ var application = builder.Build();
 
 application.UseSerilogRequestLogging();
 
-application.UseSwagger(options => { options.RouteTemplate = "openapi/{documentName}.json"; });
-application.MapScalarApiReference(x => { x.Title = "Mongo API"; });
-application.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
+application.UseSwagger();
+application.UseSwaggerUI(
+    options =>
+    {
+        options.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "v1");
+        options.RoutePrefix = string.Empty;
+        options.DocumentTitle = "Skeleton API";
+    });
 
 application.MapGet(
     pattern: "/orders",
