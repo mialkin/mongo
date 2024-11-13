@@ -42,11 +42,28 @@ application.MapGet(
 
 application.MapPost(
     pattern: "/orders",
-    handler: async ([FromBody] Order order, IMongoCollection<Order> collection, ILogger<Program> logger) =>
+    handler: async (
+        [FromBody] Order order,
+        IMongoCollection<OrderIdSequence> orderIdSequence,
+        IMongoCollection<Order> orders,
+        ILogger<Program> logger,
+        CancellationToken cancellationToken) =>
     {
         try
         {
-            await collection.InsertOneAsync(order);
+            var sequence = await orderIdSequence
+                .FindOneAndUpdateAsync(
+                    filter: Builders<OrderIdSequence>.Filter.Where(x => true),
+                    update: Builders<OrderIdSequence>.Update.Inc(x => x.Value, 1),
+                    new FindOneAndUpdateOptions<OrderIdSequence>
+                    {
+                        IsUpsert = true,
+                        ReturnDocument = ReturnDocument.After
+                    },
+                    cancellationToken: cancellationToken);
+
+            order.OrderId = sequence.Value;
+            await orders.InsertOneAsync(order, cancellationToken: cancellationToken);
         }
         catch (MongoWriteException exception)
         {

@@ -1,12 +1,16 @@
 db = db.getSiblingDB("example");
 
-db.createCollection("orders");
+db.createCollection("orderIdSequence");
+db.orderIdSequence.insert({
+    "Value": 2
+});
 
+db.createCollection("orders");
 db.orders.createIndex({"CartId": 1}, {name: "CartId", unique: true});
 
 db.orders.insertMany([
     {
-        "OrderId": 100,
+        "OrderId": 1,
         "CartId": 5,
         "Lines": [
             {
@@ -20,7 +24,7 @@ db.orders.insertMany([
         ]
     },
     {
-        "OrderId": 101,
+        "OrderId": 2,
         "CartId": 6,
         "Lines": [
             {
